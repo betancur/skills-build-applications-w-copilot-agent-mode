@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Team, Activity, Leaderboard, Workout
+from .models import User, Team, Activity, Leaderboard, Workout
 from bson import ObjectId
 
 class ObjectIdField(serializers.Field):
@@ -11,38 +10,39 @@ class ObjectIdField(serializers.Field):
         return ObjectId(data)
 
 class UserSerializer(serializers.ModelSerializer):
+    _id = ObjectIdField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = '__all__'
 
 class TeamSerializer(serializers.ModelSerializer):
-    _id = ObjectIdField(read_only=True)
-    members = UserSerializer(many=True, read_only=True)
+    _id = ObjectIdField()
+    members = UserSerializer(many=True)
 
     class Meta:
         model = Team
-        fields = ['_id', 'name', 'members']
+        fields = '__all__'
 
 class ActivitySerializer(serializers.ModelSerializer):
-    _id = ObjectIdField(read_only=True)
-    user = UserSerializer(read_only=True)
+    _id = ObjectIdField()
+    user = ObjectIdField()
 
     class Meta:
         model = Activity
-        fields = ['_id', 'user', 'activity_type', 'duration', 'date']
+        fields = '__all__'
 
 class LeaderboardSerializer(serializers.ModelSerializer):
-    _id = ObjectIdField(read_only=True)
-    user = UserSerializer(read_only=True)
+    _id = ObjectIdField()
+    user = UserSerializer()  # Expand the user object
 
     class Meta:
         model = Leaderboard
-        fields = ['_id', 'user', 'score', 'last_updated']
+        fields = '__all__'
 
 class WorkoutSerializer(serializers.ModelSerializer):
-    _id = ObjectIdField(read_only=True)
+    _id = ObjectIdField()
 
     class Meta:
         model = Workout
-        fields = ['_id', 'name', 'description', 'duration', 'difficulty']
+        fields = '__all__'

@@ -1,25 +1,17 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views
+from .views import UserViewSet, TeamViewSet, ActivityViewSet, LeaderboardViewSet, WorkoutViewSet, api_root
 
-# Define the router
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet, basename='user')
-router.register(r'teams', views.TeamViewSet, basename='team')
-router.register(r'activity', views.ActivityViewSet, basename='activity')
-router.register(r'leaderboard', views.LeaderboardViewSet, basename='leaderboard')
-router.register(r'workouts', views.WorkoutViewSet, basename='workout')
+router.register(r'users', UserViewSet)
+router.register(r'teams', TeamViewSet)
+router.register(r'activities', ActivityViewSet)
+router.register(r'leaderboard', LeaderboardViewSet)
+router.register(r'workouts', WorkoutViewSet)
 
-# Define the api_root
-api_root = views.api_root
-
-# Define the urlpatterns list explicitly
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('', api_root, name='api-root'),
+    path('', api_root, name='api-root'),  # Root endpoint
+    path('admin/', admin.site.urls),  # Admin endpoint
+    path('api/', include(router.urls)),  # API endpoint
 ]
-
-# Print statement for debugging
-print("URLs loaded")
